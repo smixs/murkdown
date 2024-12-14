@@ -1,10 +1,9 @@
 """
-MurDowd - Your Markdown Cat Assistant
+MurDown - Your Markdown Cat Assistant
 """
 import streamlit as st
 from pathlib import Path
 import tempfile
-import base64
 
 from src.utils.converters import MarkdownConverter
 from src.utils.file_handlers import cleanup_temp_files, ensure_directories
@@ -15,8 +14,32 @@ st.set_page_config(
     page_title="MurDown",
     page_icon="🐱",
     layout="wide",
-    initial_sidebar_state="expanded"
+    initial_sidebar_state="collapsed",
+    menu_items=None
 )
+
+# Hide all streamlit elements
+st.markdown("""
+    <style>
+        /* Hide all Streamlit bars and decorations */
+        #MainMenu {visibility: hidden;}
+        header {visibility: hidden;}
+        footer {visibility: hidden;}
+        .stToolbar {visibility: hidden !important;}
+        .stDeployButton {display: none !important;}
+        .stActionButton {display: none !important;}
+        div[data-testid="stToolbar"] {visibility: hidden !important;}
+        div[data-testid="stDecoration"] {visibility: hidden !important;}
+        div[data-testid="stStatusWidget"] {visibility: hidden !important;}
+        div[data-baseweb="tab-list"] {visibility: hidden !important;}
+        button[kind="header"] {display: none !important;}
+        .stApp header {display: none !important;}
+        section[data-testid="stSidebar"] {display: none !important;}
+        div[class="stActionButton"] {display: none !important;}
+        div[data-testid="stHeader"] {display: none !important;}
+        div[data-testid="stAppViewBlockContainer"] {margin-top: -100px !important;}
+    </style>
+""", unsafe_allow_html=True)
 
 # Custom CSS
 st.markdown("""
@@ -33,6 +56,7 @@ st.markdown("""
         padding: 2rem;
         border-radius: 20px;
         box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        margin-top: -100px;  /* Compensate for hidden header */
     }
     
     /* Cat mascot container */
@@ -178,7 +202,7 @@ def show_conversion_history():
         st.markdown(
             """
             <div class="info-card">
-                <h3>🐱 MurDowd's Recent Adventures</h3>
+                <h3>🐱 Recent Adventures</h3>
             """,
             unsafe_allow_html=True
         )
@@ -198,7 +222,7 @@ def main():
     st.markdown(
         """
         <div class="cat-container">
-            <h1>MurDowd</h1>
+            <h1>MurDown</h1>
             <p>Your purr-fessional Markdown conversion companion! 🐱</p>
         </div>
         """,
@@ -209,7 +233,7 @@ def main():
         """
         <div style='text-align: center; padding: 1rem 0;'>
             <p style='font-size: 1.2rem; color: #B0B0B0;'>
-                Drop your documents here and let MurDowd work his magic!<br>
+                Drop your documents here and let MurDown work his magic!<br>
                 He'll turn them into purrfect Markdown in no time. 🐾
             </p>
         </div>
@@ -225,7 +249,7 @@ def main():
     
     # Process file if uploaded
     if file_uploaded and temp_file:
-        with st.spinner("🔄 MurDowd is working his magic..."):
+        with st.spinner("🔄 Converting your file..."):
             result = st.session_state.converter.convert_file(temp_file)
             show_result(result)
     
