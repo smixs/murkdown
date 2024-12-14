@@ -62,8 +62,9 @@ st.markdown("""
         margin: 0;
         font-weight: 700;
         font-family: 'Space Grotesk', sans-serif;
+        color: #00A4FF;
     }
-    .cat-container h1 span:first-child {
+    .cat-container h1 span.murk {
         color: #FF2261;
     }
     .cat-container h1 span:last-child {
@@ -265,7 +266,7 @@ def main():
     st.markdown(
         """
         <div class="cat-container">
-            <h1><span>Murk</span><span>Down</span></h1>
+            <h1><span class="murk">Murk</span>Down</h1>
             <p>Your purr-fessional Markdown conversion companion! 🐱</p>
         </div>
         """,
@@ -277,7 +278,7 @@ def main():
         f"""
         <div style='text-align: center; margin: 2rem 0;'>
             <img src="data:image/png;base64,{cat_image}" 
-                 style="width: 200px; height: 200px; object-fit: contain;">
+                 style="width: 300px; height: 300; object-fit: contain;">
         </div>
         """,
         unsafe_allow_html=True
