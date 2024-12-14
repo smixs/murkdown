@@ -4,6 +4,7 @@ MurDown - Your Markdown Cat Assistant
 import streamlit as st
 from pathlib import Path
 import tempfile
+import base64
 
 from src.utils.converters import MarkdownConverter
 from src.utils.file_handlers import cleanup_temp_files, ensure_directories
@@ -44,19 +45,13 @@ st.markdown("""
 # Custom CSS
 st.markdown("""
 <style>
+    @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
+
     /* Dark theme */
     .stApp {
         background: #1E1E1E;
         color: #E0E0E0;
-    }
-    
-    /* Main container */
-    .main-content {
-        background: #2D2D2D;
-        padding: 2rem;
-        border-radius: 20px;
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-        margin-top: -100px;  /* Compensate for hidden header */
+        font-family: 'Space Grotesk', sans-serif;
     }
     
     /* Cat mascot container */
@@ -67,10 +62,11 @@ st.markdown("""
     .cat-container h1 {
         font-size: 3rem;
         margin: 0;
-        background: linear-gradient(45deg, #9B6BFF, #FF69B4);
+        background: linear-gradient(45deg, #6A5ACD, #B3A9F8);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
-        font-weight: 800;
+        font-weight: 700;
+        font-family: 'Space Grotesk', sans-serif;
     }
     .cat-container p {
         color: #B0B0B0;
@@ -81,7 +77,7 @@ st.markdown("""
     /* Large dropzone */
     .uploadfile {
         background: #363636 !important;
-        border: 3px dashed #9B6BFF !important;
+        border: 3px dashed #6A5ACD !important;
         border-radius: 20px !important;
         padding: 4rem !important;
         text-align: center !important;
@@ -94,13 +90,13 @@ st.markdown("""
     }
     .uploadfile:hover {
         background: #404040 !important;
-        border-color: #FF69B4 !important;
+        border-color: #B3A9F8 !important;
         color: #FFFFFF !important;
     }
     
     /* Download button */
     .stDownloadButton button {
-        background: linear-gradient(45deg, #9B6BFF, #FF69B4) !important;
+        background: linear-gradient(45deg, #6A5ACD, #B3A9F8) !important;
         color: white !important;
         border: none !important;
         padding: 0.75rem 2rem !important;
@@ -113,7 +109,7 @@ st.markdown("""
     }
     .stDownloadButton button:hover {
         transform: translateY(-2px);
-        box-shadow: 0 5px 15px rgba(155, 107, 255, 0.3);
+        box-shadow: 0 5px 15px rgba(106, 90, 205, 0.3);
     }
     
     /* Cards */
@@ -136,7 +132,7 @@ st.markdown("""
     
     /* Success message */
     .stSuccess {
-        background: rgba(155, 107, 255, 0.2) !important;
+        background: rgba(106, 90, 205, 0.2) !important;
         color: #FFFFFF !important;
     }
     
@@ -210,13 +206,18 @@ def show_conversion_history():
             st.markdown(f"- 📄 {Path(item['input']).name} → {Path(item['output']).name}")
         st.markdown("</div>", unsafe_allow_html=True)
 
+def get_base64_of_bin_file(file_path: str) -> str:
+    with open(file_path, 'rb') as f:
+        data = f.read()
+    return base64.b64encode(data).decode()
+
+# Get cat image as base64
+cat_image = get_base64_of_bin_file('static/images/cat.png')
+
 def main():
     """Main application function"""
     # Initialize session state
     initialize_session_state()
-    
-    # Main content container
-    st.markdown('<div class="main-content">', unsafe_allow_html=True)
     
     # Cat mascot header
     st.markdown(
@@ -229,13 +230,12 @@ def main():
         unsafe_allow_html=True
     )
     
+    # Cat image with base64
     st.markdown(
-        """
-        <div style='text-align: center; padding: 1rem 0;'>
-            <p style='font-size: 1.2rem; color: #B0B0B0;'>
-                Drop your documents here and let MurDown work his magic!<br>
-                He'll turn them into purrfect Markdown in no time. 🐾
-            </p>
+        f"""
+        <div style='text-align: center; margin: 2rem 0;'>
+            <img src="data:image/png;base64,{cat_image}" 
+                 style="width: 200px; height: 200px; object-fit: contain;">
         </div>
         """,
         unsafe_allow_html=True
@@ -255,9 +255,6 @@ def main():
     
     # Show conversion history
     show_conversion_history()
-    
-    # Close main content container
-    st.markdown('</div>', unsafe_allow_html=True)
     
     # Cleanup temporary files when session ends
     cleanup_temp_files(st.session_state.temp_dir)
