@@ -156,15 +156,84 @@ st.markdown("""
         padding: 1.5rem;
         margin: 1rem 0;
         border: 1px solid #404040;
+        width: 100%;
+        box-sizing: border-box;
     }
     
     /* Content area */
-    pre {
-        background: #2D2D2D !important;
-        padding: 1rem !important;
-        border-radius: 10px !important;
-        border: 1px solid #404040 !important;
-        color: #E0E0E0 !important;
+    .content-container {
+        width: 100%;
+        overflow: hidden;
+        border-radius: 10px;
+        background: #2D2D2D;
+        border: 1px solid #404040;
+        position: relative;
+    }
+    
+    .content-container pre {
+        margin: 0;
+        padding: 1rem;
+        overflow-x: scroll;
+        overflow-y: scroll;
+        max-height: 500px;
+        white-space: pre;
+        font-family: monospace;
+        font-size: 14px;
+        line-height: 1.4;
+        color: #E0E0E0;
+        width: auto;
+    }
+    
+    .content-container pre code {
+        display: inline-block;
+        min-width: 100%;
+        padding-bottom: 20px;
+    }
+    
+    /* Table styles */
+    .content-container table {
+        border-collapse: collapse;
+        border-spacing: 0;
+        margin: 0;
+        padding: 0;
+        width: auto;
+    }
+    
+    .content-container td,
+    .content-container th {
+        border: 1px solid #404040;
+        padding: 8px;
+        white-space: nowrap;
+        text-align: left;
+        min-width: 100px;
+    }
+    
+    /* Scrollbar styles */
+    .content-container pre::-webkit-scrollbar {
+        width: 12px;
+        height: 12px;
+        background-color: #2D2D2D;
+    }
+    
+    .content-container pre::-webkit-scrollbar-track {
+        background: #2D2D2D;
+        border-radius: 6px;
+    }
+    
+    .content-container pre::-webkit-scrollbar-thumb {
+        background: #FF2261;
+        border-radius: 6px;
+        border: 3px solid #2D2D2D;
+        min-width: 50px;
+        min-height: 50px;
+    }
+    
+    .content-container pre::-webkit-scrollbar-thumb:hover {
+        background: #00A4FF;
+    }
+    
+    .content-container pre::-webkit-scrollbar-corner {
+        background: #2D2D2D;
     }
     
     /* Success message */
@@ -213,12 +282,15 @@ def show_result(result):
                 use_container_width=True,
             )
         
-        # Show full content in a card
+        # Show full content in a card with proper container
+        content = result.content.replace('<', '&lt;').replace('>', '&gt;')
         st.markdown(
             f"""
             <div class="info-card">
                 <h3>📄 Converted Content</h3>
-                <pre>{result.content}</pre>
+                <div class="content-container">
+                    <pre><code style="display: inline-block; min-width: max-content;">{content}</code></pre>
+                </div>
             </div>
             """,
             unsafe_allow_html=True
