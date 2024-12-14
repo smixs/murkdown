@@ -1,17 +1,23 @@
 """
-MurDown - Your Markdown Cat Assistant
+MurkDown - Your Markdown Cat Assistant
 """
 import streamlit as st
 from pathlib import Path
 import tempfile
+import base64
 
 from src.utils.converters import MarkdownConverter
 from src.utils.file_handlers import cleanup_temp_files, ensure_directories
 from src.components.file_uploader import file_uploader_component
 
+def get_base64_of_bin_file(file_path: str) -> str:
+    with open(file_path, 'rb') as f:
+        data = f.read()
+    return base64.b64encode(data).decode()
+
 # Configure Streamlit page
 st.set_page_config(
-    page_title="MurDown",
+    page_title="MurkDown",
     page_icon="🐱",
     layout="wide",
     initial_sidebar_state="collapsed",
@@ -37,116 +43,124 @@ st.markdown("""
         section[data-testid="stSidebar"] {display: none !important;}
         div[class="stActionButton"] {display: none !important;}
         div[data-testid="stHeader"] {display: none !important;}
-        div[data-testid="stAppViewBlockContainer"] {margin-top: -100px !important;}
+        
+        /* Remove margins and padding */
+        .block-container {
+            padding: 0 !important;
+            max-width: 100% !important;
+        }
+        
+        .element-container {
+            margin: 0 !important;
+        }
+        
+        /* Cat mascot container */
+        .cat-container {{
+            text-align: center;
+            margin-bottom: 2rem;
+        }}
+        .cat-container h1 {{
+            font-size: 3rem;
+            margin: 0;
+            background: linear-gradient(45deg, #9B6BFF, #FF69B4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 800;
+        }}
+        .cat-container p {{
+            color: #B0B0B0;
+            font-size: 1.2rem;
+            margin-top: 0.5rem;
+        }}
+        
+        /* Large dropzone */
+        .uploadfile {{
+            background: #363636 !important;
+            border: 3px dashed #9B6BFF !important;
+            border-radius: 20px !important;
+            padding: 0 !important;
+            text-align: center !important;
+            transition: all 0.3s ease !important;
+            width: 300px !important;
+            height: 300px !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            color: #B0B0B0 !important;
+            margin: 0 auto !important;
+            position: relative !important;
+        }}
+        .uploadfile:hover {{
+            background: #404040 url("data:image/png;base64,{cat_image}") no-repeat center !important;
+            background-size: 320px !important;
+            border-color: #FF69B4 !important;
+            color: transparent !important;
+        }}
+        .uploadfile::before {{
+            content: "Drop your file here";
+            position: absolute;
+            top: 20px;
+            left: 0;
+            right: 0;
+            text-align: center;
+            color: #B0B0B0;
+            font-size: 1.2rem;
+        }}
+        .uploadfile:hover::before {{
+            color: #FFFFFF;
+        }}
+        
+        /* Download button */
+        .stDownloadButton button {{
+            background: linear-gradient(45deg, #9B6BFF, #FF69B4) !important;
+            color: white !important;
+            border: none !important;
+            padding: 0.75rem 2rem !important;
+            border-radius: 30px !important;
+            font-size: 1.2rem !important;
+            font-weight: 600 !important;
+            transition: all 0.3s ease !important;
+            width: 100% !important;
+            margin: 1rem 0 !important;
+        }}
+        .stDownloadButton button:hover {{
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(155, 107, 255, 0.3);
+        }}
+        
+        /* Cards */
+        .info-card {{
+            background: #363636;
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin: 1rem 0;
+            border: 1px solid #404040;
+        }}
+        
+        /* Content area */
+        pre {{
+            background: #2D2D2D !important;
+            padding: 1rem !important;
+            border-radius: 10px !important;
+            border: 1px solid #404040 !important;
+            color: #E0E0E0 !important;
+        }}
+        
+        /* Success message */
+        .stSuccess {{
+            background: rgba(155, 107, 255, 0.2) !important;
+            color: #FFFFFF !important;
+        }}
+        
+        /* Error message */
+        .stError {{
+            background: rgba(255, 105, 180, 0.2) !important;
+            color: #FFFFFF !important;
+        }}
     </style>
-""", unsafe_allow_html=True)
-
-# Custom CSS
-st.markdown("""
-<style>
-    /* Dark theme */
-    .stApp {
-        background: #1E1E1E;
-        color: #E0E0E0;
-    }
-    
-    /* Main container */
-    .main-content {
-        background: #2D2D2D;
-        padding: 2rem;
-        border-radius: 20px;
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-        margin-top: -100px;  /* Compensate for hidden header */
-    }
-    
-    /* Cat mascot container */
-    .cat-container {
-        text-align: center;
-        margin-bottom: 2rem;
-    }
-    .cat-container h1 {
-        font-size: 3rem;
-        margin: 0;
-        background: linear-gradient(45deg, #9B6BFF, #FF69B4);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        font-weight: 800;
-    }
-    .cat-container p {
-        color: #B0B0B0;
-        font-size: 1.2rem;
-        margin-top: 0.5rem;
-    }
-    
-    /* Large dropzone */
-    .uploadfile {
-        background: #363636 !important;
-        border: 3px dashed #9B6BFF !important;
-        border-radius: 20px !important;
-        padding: 4rem !important;
-        text-align: center !important;
-        transition: all 0.3s ease !important;
-        min-height: 300px !important;
-        display: flex !important;
-        align-items: center !important;
-        justify-content: center !important;
-        color: #B0B0B0 !important;
-    }
-    .uploadfile:hover {
-        background: #404040 !important;
-        border-color: #FF69B4 !important;
-        color: #FFFFFF !important;
-    }
-    
-    /* Download button */
-    .stDownloadButton button {
-        background: linear-gradient(45deg, #9B6BFF, #FF69B4) !important;
-        color: white !important;
-        border: none !important;
-        padding: 0.75rem 2rem !important;
-        border-radius: 30px !important;
-        font-size: 1.2rem !important;
-        font-weight: 600 !important;
-        transition: all 0.3s ease !important;
-        width: 100% !important;
-        margin: 1rem 0 !important;
-    }
-    .stDownloadButton button:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 5px 15px rgba(155, 107, 255, 0.3);
-    }
-    
-    /* Cards */
-    .info-card {
-        background: #363636;
-        border-radius: 15px;
-        padding: 1.5rem;
-        margin: 1rem 0;
-        border: 1px solid #404040;
-    }
-    
-    /* Content area */
-    pre {
-        background: #2D2D2D !important;
-        padding: 1rem !important;
-        border-radius: 10px !important;
-        border: 1px solid #404040 !important;
-        color: #E0E0E0 !important;
-    }
-    
-    /* Success message */
-    .stSuccess {
-        background: rgba(155, 107, 255, 0.2) !important;
-        color: #FFFFFF !important;
-    }
-    
-    /* Error message */
-    .stError {
-        background: rgba(255, 105, 180, 0.2) !important;
-        color: #FFFFFF !important;
-    }
-</style>
-""", unsafe_allow_html=True)
+    """,
+    unsafe_allow_html=True
+)
 
 def initialize_session_state():
     """Initialize session state variables"""
@@ -242,7 +256,7 @@ def main():
     )
     
     # Create centered container for file uploader
-    col1, col2, col3 = st.columns([1, 3, 1])
+    col1, col2, col3 = st.columns([2, 1, 2])
     with col2:
         # File uploader
         file_uploaded, temp_file = file_uploader_component(st.session_state.temp_dir)
