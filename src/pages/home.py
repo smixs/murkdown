@@ -31,17 +31,21 @@ def show_result(result):
     if result.success:
         st.success("Conversion completed successfully!")
         
-        # Always show full content
+        # Center-align container for the download button
+        col1, col2, col3 = st.columns([1, 2, 1])
+        with col2:
+            # Large centered download button
+            st.download_button(
+                label="⬇️ Download Markdown",
+                data=result.content,
+                file_name=Path(result.output_file).name,
+                mime="text/markdown",
+                use_container_width=True,
+            )
+        
+        # Show full content below
         st.markdown("### Converted Content")
         st.markdown(result.content)
-        
-        # Download button
-        st.download_button(
-            label="Download Markdown",
-            data=result.content,
-            file_name=Path(result.output_file).name,
-            mime="text/markdown"
-        )
         
         # Add to history
         if len(st.session_state.conversion_history) >= 5:
