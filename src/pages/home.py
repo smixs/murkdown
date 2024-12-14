@@ -86,6 +86,7 @@ st.markdown("""
     
     div[data-testid="stFileUploader"] > section {
         padding: 0 !important;
+        background: transparent !important;
     }
     
     div[data-testid="stFileUploader"] > section > div {
@@ -108,6 +109,7 @@ st.markdown("""
         line-height: 1.6 !important;
         cursor: pointer !important;
         -webkit-font-smoothing: auto !important;
+        background-clip: padding-box !important;
     }
     
     div[data-testid="stFileUploader"] > section > div:hover {
