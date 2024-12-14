@@ -4,11 +4,11 @@ Purrfect for LLMs - converts any document into LLM-optimized Markdown format.
 
 ## Features
 
-- Convert various document formats to Markdown
-- Supported formats: PDF, DOCX, TXT, and more
-- Simple drag-and-drop interface
-- Real-time conversion preview
-- LLM-optimized output format
+- Convert various document formats to Markdown  
+- Supported formats: PDF, DOCX, TXT, Excel, HTML, and more  
+- Simple drag-and-drop interface  
+- Real-time conversion preview  
+- LLM-optimized output format  
 
 ## Installation
 
