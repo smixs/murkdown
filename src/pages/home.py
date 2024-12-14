@@ -325,6 +325,18 @@ st.markdown("""
         background: rgba(0, 164, 255, 0.2) !important;
         color: #FFFFFF !important;
     }
+    
+    /* Info message during conversion */
+    .stAlert {
+        background-color: rgba(0, 164, 255, 0.1) !important;
+        border: 1px solid #00A4FF !important;
+        padding: 1rem !important;
+        border-radius: 10px !important;
+        color: #E0E0E0 !important;
+        font-size: 1.2rem !important;
+        text-align: center !important;
+        margin: 1rem 0 !important;
+    }
 </style>
 """, unsafe_allow_html=True)
 
@@ -336,51 +348,6 @@ def initialize_session_state():
         st.session_state.temp_dir = Path(tempfile.mkdtemp())
     if 'conversion_history' not in st.session_state:
         st.session_state.conversion_history = []
-
-def show_result(result):
-    """Display conversion result"""
-    if result.success:
-        # Center-align container for success message
-        col1, col2, col3 = st.columns([1, 3, 1])
-        with col2:
-            st.success("😺 Purrfect! Your file has been converted!")
-        
-        # Center-align container for the download button
-        col1, col2, col3 = st.columns([1, 3, 1])
-        with col2:
-            # Large centered download button
-            st.download_button(
-                label="🐾 Download Markdown",
-                data=result.content,
-                file_name=Path(result.output_file).name,
-                mime="text/markdown",
-                use_container_width=True,
-            )
-        
-        # Show full content in a card with proper container
-        content = result.content.replace('<', '&lt;').replace('>', '&gt;')
-        st.markdown(
-            f"""
-            <div class="info-card">
-                <h3>📄 Converted Content</h3>
-                <div class="content-container">
-                    <pre><code style="display: inline-block; min-width: max-content;">{content}</code></pre>
-                </div>
-            </div>
-            """,
-            unsafe_allow_html=True
-        )
-        
-        # Add to history
-        if len(st.session_state.conversion_history) >= 5:
-            st.session_state.conversion_history.pop(0)
-        st.session_state.conversion_history.append({
-            'input': result.original_file,
-            'output': result.output_file,
-            'timestamp': st.session_state.get('timestamp', 'Unknown')
-        })
-    else:
-        st.error(f"😿 Oops! Something went wrong: {result.error}")
 
 def show_conversion_history():
     """Display conversion history"""
@@ -409,6 +376,12 @@ def main():
     # Initialize session state
     initialize_session_state()
     
+    # Add conversion state if not exists
+    if 'is_converting' not in st.session_state:
+        st.session_state.is_converting = False
+    if 'conversion_result' not in st.session_state:
+        st.session_state.conversion_result = None
+        
     # Cat mascot header
     st.markdown(
         """
@@ -438,14 +411,73 @@ def main():
         file_uploaded, temp_file = file_uploader_component(st.session_state.temp_dir)
     
     # Process file if uploaded
-    if file_uploaded and temp_file:
-        # Center only the spinner message
+    if file_uploaded and temp_file and not st.session_state.conversion_result:
+        if not st.session_state.is_converting:
+            st.session_state.is_converting = True
+            st.rerun()
+        
+        # Container for conversion process
         cols = st.columns([1, 2, 1])
         with cols[1]:
-            with st.spinner("🔄 Converting your file..."):
-                result = st.session_state.converter.convert_file(temp_file)
-        show_result(result)
+            if st.session_state.is_converting:
+                st.info("🔄 Converting your file... Please wait...", icon="ℹ️")
+                try:
+                    result = st.session_state.converter.convert_file(temp_file)
+                    st.session_state.conversion_result = result
+                finally:
+                    st.session_state.is_converting = False
+                    st.rerun()
     
+    # Show results if we have them
+    if st.session_state.conversion_result and not st.session_state.is_converting:
+        result = st.session_state.conversion_result
+        cols = st.columns([1, 2, 1])
+        with cols[1]:
+            if result.success:
+                st.success("😺 Purrfect! Your file has been converted!")
+                
+                st.download_button(
+                    label="🐾 Download Markdown",
+                    data=result.content,
+                    file_name=Path(result.output_file).name,
+                    mime="text/markdown",
+                    use_container_width=True,
+                )
+                
+                # Show full content in a card
+                content = result.content.replace('<', '&lt;').replace('>', '&gt;')
+                st.markdown(
+                    f"""
+                    <div class="info-card">
+                        <h3>📄 Converted Content</h3>
+                        <div class="content-container">
+                            <pre><code style="display: inline-block; min-width: max-content;">{content}</code></pre>
+                        </div>
+                    </div>
+                    """,
+                    unsafe_allow_html=True
+                )
+                
+                # Add to history
+                if len(st.session_state.conversion_history) >= 5:
+                    st.session_state.conversion_history.pop(0)
+                st.session_state.conversion_history.append({
+                    'input': result.original_file,
+                    'output': result.output_file,
+                    'timestamp': st.session_state.get('timestamp', 'Unknown')
+                })
+            else:
+                st.error(f"😿 Oops! Something went wrong: {result.error}")
+    
+    # Add button to reset conversion and upload new file
+    if st.session_state.conversion_result and not st.session_state.is_converting:
+        cols = st.columns([1, 2, 1])
+        with cols[1]:
+            if st.button("Convert another file"):
+                st.session_state.conversion_result = None
+                st.session_state.is_converting = False
+                st.rerun()
+
     # Show conversion history
     show_conversion_history()
     
