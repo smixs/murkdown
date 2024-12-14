@@ -3,6 +3,7 @@ markitdown>=0.0.1a2
 
 # Web Framework
 streamlit>=1.28.0
+streamlit-lottie>=0.0.5  # For Lottie animations
 
 # Document Processing
 python-docx>=0.8.11  # For Word documents
