@@ -52,6 +52,81 @@ st.markdown("""
         font-family: 'Space Grotesk', sans-serif;
     }
     
+    /* Override default Streamlit text colors */
+    .stMarkdown, 
+    .stText, 
+    .stCode, 
+    .stTextInput > div > div > input,
+    .stSelectbox > div > div > div,
+    .stFileUploader label,
+    .stFileUploader p,
+    div[data-testid="stMarkdownContainer"] p,
+    div[data-testid="stMarkdownContainer"] h1,
+    div[data-testid="stMarkdownContainer"] h2,
+    div[data-testid="stMarkdownContainer"] h3,
+    div[data-testid="stMarkdownContainer"] h4 {
+        color: #E0E0E0 !important;
+        font-family: 'Space Grotesk', sans-serif !important;
+    }
+    
+    /* File uploader styles */
+    .uploadedFile {
+        background: #2D2D2D !important;
+        color: #E0E0E0 !important;
+        border-radius: 10px !important;
+        border: 1px solid #404040 !important;
+        padding: 1rem !important;
+    }
+    
+    .uploadedFile:hover {
+        background: #363636 !important;
+    }
+    
+    /* Selected file info */
+    [data-testid="stFileUploader"] > section > div:first-of-type {
+        background: #2D2D2D !important;
+        border-radius: 10px !important;
+        padding: 1rem !important;
+        margin-bottom: 1rem !important;
+    }
+    
+    [data-testid="stFileUploader"] > section > div:first-of-type p {
+        color: #00A4FF !important;
+        font-size: 1.2rem !important;
+        font-weight: 600 !important;
+        margin-bottom: 0.5rem !important;
+    }
+    
+    [data-testid="stFileUploader"] > section > div:first-of-type p:first-of-type {
+        color: #FF2261 !important;
+        font-size: 1.4rem !important;
+        margin-bottom: 1rem !important;
+    }
+    
+    /* Progress bar */
+    .stProgress > div > div > div {
+        background-color: #FF2261 !important;
+    }
+    
+    /* Spinner */
+    .stSpinner > div {
+        text-align: center !important;
+        color: #E0E0E0 !important;
+    }
+    
+    /* All text elements */
+    div[data-testid="stText"],
+    div[data-testid="stMarkdownContainer"] > p {
+        color: #E0E0E0 !important;
+    }
+    
+    /* Headers in markdown */
+    div[data-testid="stMarkdownContainer"] > h1,
+    div[data-testid="stMarkdownContainer"] > h2,
+    div[data-testid="stMarkdownContainer"] > h3 {
+        color: #00A4FF !important;
+    }
+    
     /* Cat mascot container */
     .cat-container {
         text-align: center;
@@ -364,9 +439,12 @@ def main():
     
     # Process file if uploaded
     if file_uploaded and temp_file:
-        with st.spinner("🔄 Converting your file..."):
-            result = st.session_state.converter.convert_file(temp_file)
-            show_result(result)
+        # Center only the spinner message
+        cols = st.columns([1, 2, 1])
+        with cols[1]:
+            with st.spinner("🔄 Converting your file..."):
+                result = st.session_state.converter.convert_file(temp_file)
+        show_result(result)
     
     # Show conversion history
     show_conversion_history()
