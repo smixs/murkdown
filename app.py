@@ -1,7 +1,7 @@
 """
-MurDown - Your Markdown Cat Assistant
+MurkDown - Your Markdown Cat Assistant
 """
+import streamlit as st
 from src.pages.home import main as home_main
 
-if __name__ == "__main__":
-    home_main() 
+home_main()

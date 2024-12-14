@@ -12,7 +12,7 @@ from src.components.file_uploader import file_uploader_component
 
 # Configure Streamlit page
 st.set_page_config(
-    page_title="MurDown",
+    page_title="MurkDown",
     page_icon="🐱",
     layout="centered"
 )
