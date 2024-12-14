@@ -1,6 +1,6 @@
-# MarkItDown Web Interface
+# MurkDown 🐱
 
-Web interface for converting various document formats to Markdown using the MarkItDown library.
+Purrfect for LLMs - converts any document into LLM-optimized Markdown format.
 
 ## Features
 
@@ -8,13 +8,14 @@ Web interface for converting various document formats to Markdown using the Mark
 - Supported formats: PDF, DOCX, TXT, and more
 - Simple drag-and-drop interface
 - Real-time conversion preview
+- LLM-optimized output format
 
 ## Installation
 
 1. Clone the repository:
 ```bash
 git clone <your-repo-url>
-cd markitdown
+cd murkdown
 ```
 
 2. Install dependencies:
@@ -24,21 +25,17 @@ pip install -r requirements.txt
 
 ## Usage
 
-Run the Streamlit app locally:
+Run the Streamlit app:
 
 ```bash
-# Запуск через основной файл
-streamlit run src/app.py
-
-# Или напрямую через страницу
-streamlit run src/pages/home.py
+streamlit run app.py
 ```
 
 ## Project Structure
 ```
-markitdown/
+murkdown/
+├── app.py             # Entry point
 ├── src/
-│   ├── app.py          # Entry point
 │   ├── pages/
 │   │   ├── home.py     # Main page
 │   │   └── settings.py # Settings page
