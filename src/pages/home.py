@@ -7,7 +7,6 @@ import tempfile
 
 from src.utils.converters import MarkdownConverter
 from src.utils.file_handlers import cleanup_temp_files, ensure_directories
-from src.components.sidebar import sidebar_component
 from src.components.file_uploader import file_uploader_component
 
 # Configure Streamlit page
@@ -27,17 +26,14 @@ def initialize_session_state():
     if 'conversion_history' not in st.session_state:
         st.session_state.conversion_history = []
 
-def show_result(result, settings):
+def show_result(result):
     """Display conversion result"""
     if result.success:
         st.success("Conversion completed successfully!")
         
-        # Show preview if enabled
-        if settings["show_preview"]:
-            st.markdown("### Preview")
-            preview_length = settings["max_preview_length"]
-            preview = result.content[:preview_length] + "..." if len(result.content) > preview_length else result.content
-            st.markdown(preview)
+        # Always show full content
+        st.markdown("### Converted Content")
+        st.markdown(result.content)
         
         # Download button
         st.download_button(
@@ -70,9 +66,6 @@ def main():
     # Initialize session state
     initialize_session_state()
     
-    # Get settings from sidebar
-    settings = sidebar_component()
-    
     # Main content
     st.title("MarkItDown Web")
     st.markdown(
@@ -87,7 +80,7 @@ def main():
     if file_uploaded and temp_file:
         with st.spinner("Converting file..."):
             result = st.session_state.converter.convert_file(temp_file)
-            show_result(result, settings)
+            show_result(result)
     
     # Show conversion history
     show_conversion_history()

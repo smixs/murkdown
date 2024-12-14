@@ -7,28 +7,6 @@ from typing import Optional, Tuple
 from src.utils.converters import MarkdownConverter, SUPPORTED_FORMATS
 from src.utils.file_handlers import save_uploaded_file, get_file_size
 
-def show_supported_formats():
-    """Display supported file formats"""
-    st.markdown("### Supported Formats")
-    
-    # Group formats by type
-    format_groups = {
-        "Documents": ["pdf", "docx", "pptx", "xlsx"],
-        "Images": ["png", "jpg", "jpeg"],
-        "Audio": ["mp3", "wav"],
-        "Text": ["txt", "html"]
-    }
-    
-    # Create columns for format groups
-    cols = st.columns(len(format_groups))
-    
-    # Display formats by group
-    for col, (group, formats) in zip(cols, format_groups.items()):
-        with col:
-            st.markdown(f"**{group}**")
-            for fmt in formats:
-                st.markdown(f"- .{fmt}")
-
 def file_uploader_component(temp_dir: Path) -> Tuple[bool, Optional[Path]]:
     """
     Display file uploader component
@@ -39,9 +17,6 @@ def file_uploader_component(temp_dir: Path) -> Tuple[bool, Optional[Path]]:
     Returns:
         Tuple of (file_uploaded, file_path)
     """
-    # Show supported formats
-    show_supported_formats()
-    
     # File uploader
     st.markdown("### Upload File")
     uploaded_file = st.file_uploader(
