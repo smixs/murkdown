@@ -76,7 +76,7 @@ st.markdown("""
     
     /* Large dropzone */
     .uploadfile {
-        background: #363636 !important;
+        background: #2D2D2D !important;
         border: 3px dashed #6A5ACD !important;
         border-radius: 20px !important;
         padding: 4rem !important;
@@ -89,7 +89,7 @@ st.markdown("""
         color: #B0B0B0 !important;
     }
     .uploadfile:hover {
-        background: #404040 !important;
+        background: #363636 !important;
         border-color: #B3A9F8 !important;
         color: #FFFFFF !important;
     }
@@ -134,6 +134,9 @@ st.markdown("""
     .stSuccess {
         background: rgba(106, 90, 205, 0.2) !important;
         color: #FFFFFF !important;
+        border-radius: 12px !important;
+        padding: 1rem !important;
+        text-align: center !important;
     }
     
     /* Error message */
@@ -156,10 +159,13 @@ def initialize_session_state():
 def show_result(result):
     """Display conversion result"""
     if result.success:
-        st.success("😺 Purrfect! Your file has been converted!")
+        # Center-align container for success message
+        col1, col2, col3 = st.columns([1, 3, 1])
+        with col2:
+            st.success("😺 Purrfect! Your file has been converted!")
         
         # Center-align container for the download button
-        col1, col2, col3 = st.columns([1, 2, 1])
+        col1, col2, col3 = st.columns([1, 3, 1])
         with col2:
             # Large centered download button
             st.download_button(
