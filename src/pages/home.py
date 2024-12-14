@@ -75,23 +75,55 @@ st.markdown("""
     }
     
     /* Large dropzone */
-    .uploadfile {
+    div[data-testid="stFileUploader"] {
+        width: 100% !important;
+    }
+    
+    /* Hide Browse Files button */
+    div[data-testid="stFileUploader"] button[kind="secondary"] {
+        display: none !important;
+    }
+    
+    div[data-testid="stFileUploader"] > section {
+        padding: 0 !important;
+    }
+    
+    div[data-testid="stFileUploader"] > section > div {
         background: #2D2D2D !important;
         border: 3px dashed #6A5ACD !important;
         border-radius: 20px !important;
-        padding: 4rem !important;
+        padding: 2rem !important;
         text-align: center !important;
         transition: all 0.3s ease !important;
-        min-height: 300px !important;
+        width: 100% !important;
+        height: 300px !important;
         display: flex !important;
+        flex-direction: column !important;
         align-items: center !important;
         justify-content: center !important;
         color: #B0B0B0 !important;
+        font-family: 'Space Grotesk', sans-serif !important;
+        font-size: 16px !important;
+        font-weight: 400 !important;
+        line-height: 1.6 !important;
+        cursor: pointer !important;
+        -webkit-font-smoothing: auto !important;
     }
-    .uploadfile:hover {
+    
+    div[data-testid="stFileUploader"] > section > div:hover {
         background: #363636 !important;
         border-color: #B3A9F8 !important;
         color: #FFFFFF !important;
+    }
+    
+    div[data-testid="stFileUploader"] p {
+        font-size: 16px !important;
+        color: #B0B0B0 !important;
+    }
+    
+    div[data-testid="stFileUploader"] small {
+        font-size: 14px !important;
+        color: #808080 !important;
     }
     
     /* Download button */
