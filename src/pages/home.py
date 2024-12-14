@@ -17,29 +17,6 @@ st.set_page_config(
     layout="centered"
 )
 
-# Hide all streamlit elements
-st.markdown("""
-    <style>
-        /* Hide all Streamlit bars and decorations */
-        #MainMenu {visibility: hidden;}
-        header {visibility: hidden;}
-        footer {visibility: hidden;}
-        .stToolbar {visibility: hidden !important;}
-        .stDeployButton {display: none !important;}
-        .stActionButton {display: none !important;}
-        div[data-testid="stToolbar"] {visibility: hidden !important;}
-        div[data-testid="stDecoration"] {visibility: hidden !important;}
-        div[data-testid="stStatusWidget"] {visibility: hidden !important;}
-        div[data-baseweb="tab-list"] {visibility: hidden !important;}
-        button[kind="header"] {display: none !important;}
-        .stApp header {display: none !important;}
-        section[data-testid="stSidebar"] {display: none !important;}
-        div[class="stActionButton"] {display: none !important;}
-        div[data-testid="stHeader"] {display: none !important;}
-        div[data-testid="stAppViewBlockContainer"] {margin-top: -100px !important;}
-    </style>
-""", unsafe_allow_html=True)
-
 # Custom CSS
 st.markdown("""
 <style>
@@ -248,111 +225,15 @@ st.markdown("""
     .content-container pre {
         margin: 0;
         padding: 1rem;
-        overflow-x: scroll;
-        overflow-y: scroll;
-        max-height: 500px;
-        white-space: pre;
-        font-family: monospace;
-        font-size: 14px;
-        line-height: 1.4;
-        color: #E0E0E0;
-        width: auto;
-    }
-    
-    .content-container pre code {
-        display: inline-block;
-        min-width: 100%;
-        padding-bottom: 20px;
-    }
-    
-    /* Table styles */
-    .content-container table {
-        border-collapse: collapse;
-        border-spacing: 0;
-        margin: 0;
-        padding: 0;
-        width: auto;
-    }
-    
-    .content-container td,
-    .content-container th {
-        border: 1px solid #404040;
-        padding: 8px;
-        white-space: nowrap;
-        text-align: left;
-        min-width: 100px;
-    }
-    
-    /* Scrollbar styles */
-    .content-container pre::-webkit-scrollbar {
-        width: 12px;
-        height: 12px;
-        background-color: #2D2D2D;
-    }
-    
-    .content-container pre::-webkit-scrollbar-track {
-        background: #2D2D2D;
-        border-radius: 6px;
-    }
-    
-    .content-container pre::-webkit-scrollbar-thumb {
-        background: #FF2261;
-        border-radius: 6px;
-        border: 3px solid #2D2D2D;
-        min-width: 50px;
-        min-height: 50px;
-    }
-    
-    .content-container pre::-webkit-scrollbar-thumb:hover {
-        background: #00A4FF;
-    }
-    
-    .content-container pre::-webkit-scrollbar-corner {
-        background: #2D2D2D;
-    }
-    
-    /* Success message */
-    .stSuccess {
-        background: rgba(255, 34, 97, 0.2) !important;
-        color: #FFFFFF !important;
-        border-radius: 12px !important;
-        padding: 1rem !important;
-        text-align: center !important;
-    }
-    
-    /* Error message */
-    .stError {
-        background: rgba(0, 164, 255, 0.2) !important;
-        color: #FFFFFF !important;
-    }
-    
-    /* Info message during conversion */
-    .stAlert {
-        background-color: rgba(0, 164, 255, 0.1) !important;
-        border: 1px solid #00A4FF !important;
-        padding: 1rem !important;
-        border-radius: 10px !important;
-        color: #E0E0E0 !important;
-        font-size: 1.2rem !important;
-        text-align: center !important;
-        margin: 1rem 0 !important;
-    }
-    
-    /* Hide the Selected File block */
-    [data-testid="stFileUploadDropzone"] + div {
-        display: none !important;
     }
 </style>
-<script>
-    // Сохраняем позицию прокрутки
-    window.addEventListener('load', function() {
-        const uploadSection = document.getElementById('upload-section');
-        if (uploadSection) {
-            uploadSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        }
-    });
-</script>
 """, unsafe_allow_html=True)
+
+# Инициализация состояния сессии
+if 'converted_files' not in st.session_state:
+    st.session_state['converted_files'] = []
+if 'current_file' not in st.session_state:
+    st.session_state['current_file'] = None
 
 def initialize_session_state():
     """Initialize session state variables"""
