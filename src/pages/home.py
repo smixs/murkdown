@@ -337,7 +337,21 @@ st.markdown("""
         text-align: center !important;
         margin: 1rem 0 !important;
     }
+    
+    /* Hide the Selected File block */
+    [data-testid="stFileUploadDropzone"] + div {
+        display: none !important;
+    }
 </style>
+<script>
+    // Сохраняем позицию прокрутки
+    window.addEventListener('load', function() {
+        const uploadSection = document.getElementById('upload-section');
+        if (uploadSection) {
+            uploadSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+    });
+</script>
 """, unsafe_allow_html=True)
 
 def initialize_session_state():
@@ -407,13 +421,15 @@ def main():
     # Create centered container for file uploader
     col1, col2, col3 = st.columns([1, 3, 1])
     with col2:
-        # File uploader
+        # Добавляем якорь перед загрузчиком
+        st.markdown('<div id="upload-section"></div>', unsafe_allow_html=True)
         file_uploaded, temp_file = file_uploader_component(st.session_state.temp_dir)
     
     # Process file if uploaded
     if file_uploaded and temp_file and not st.session_state.conversion_result:
         if not st.session_state.is_converting:
             st.session_state.is_converting = True
+            # Добавляем якорь в URL при перезагрузке
             st.rerun()
         
         # Container for conversion process
@@ -457,29 +473,8 @@ def main():
                     """,
                     unsafe_allow_html=True
                 )
-                
-                # Add to history
-                if len(st.session_state.conversion_history) >= 5:
-                    st.session_state.conversion_history.pop(0)
-                st.session_state.conversion_history.append({
-                    'input': result.original_file,
-                    'output': result.output_file,
-                    'timestamp': st.session_state.get('timestamp', 'Unknown')
-                })
             else:
                 st.error(f"😿 Oops! Something went wrong: {result.error}")
-    
-    # Add button to reset conversion and upload new file
-    if st.session_state.conversion_result and not st.session_state.is_converting:
-        cols = st.columns([1, 2, 1])
-        with cols[1]:
-            if st.button("Convert another file"):
-                st.session_state.conversion_result = None
-                st.session_state.is_converting = False
-                st.rerun()
-
-    # Show conversion history
-    show_conversion_history()
     
     # Cleanup temporary files when session ends
     cleanup_temp_files(st.session_state.temp_dir)

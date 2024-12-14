@@ -27,24 +27,6 @@ def file_uploader_component(temp_dir: Path) -> Tuple[bool, Optional[Path]]:
     )
     
     if uploaded_file is not None:
-        # Show file info with custom styling
-        st.markdown(
-            f"""
-            <div class="info-card">
-                <h4 style='margin: 0; color: #9B6BFF;'>🐾 Selected File</h4>
-                <div style='margin: 0.5rem 0;'>
-                    <p style='margin: 0.2rem 0;'>
-                        <strong>Name:</strong> {uploaded_file.name}
-                    </p>
-                    <p style='margin: 0.2rem 0;'>
-                        <strong>Size:</strong> {len(uploaded_file.getvalue()) / 1024:.1f} KB
-                    </p>
-                </div>
-            </div>
-            """,
-            unsafe_allow_html=True
-        )
-        
         # Save file
         temp_file = save_uploaded_file(uploaded_file, temp_dir)
         if temp_file:
