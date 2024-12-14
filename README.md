@@ -45,14 +45,6 @@ murkdown/
 └── README.md
 ```
 
-## Environment Variables
-
-Create a `.env` file with the following variables:
-
-```
-# Add any required API keys or configuration here
-```
-
 ## Live Demo
 
 Visit [Streamlit Cloud](https://murkdown.streamlit.app/) to see the live demo.
