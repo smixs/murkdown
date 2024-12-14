@@ -401,7 +401,8 @@ def main():
         """
         <div class="cat-container">
             <h1><span class="murk">Murk</span>Down</h1>
-            <p>Your purr-fessional Markdown conversion companion! 🐱</p>
+            <p>Purrfect for LLMs 🐱</p>
+            <p style="font-size: 1rem; opacity: 0.6;">Converts any document into LLM-optimized Markdown format</p>
         </div>
         """,
         unsafe_allow_html=True
