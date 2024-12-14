@@ -14,9 +14,7 @@ from src.components.file_uploader import file_uploader_component
 st.set_page_config(
     page_title="MurDown",
     page_icon="🐱",
-    layout="wide",
-    initial_sidebar_state="collapsed",
-    menu_items=None
+    layout="centered"
 )
 
 # Hide all streamlit elements
@@ -62,11 +60,14 @@ st.markdown("""
     .cat-container h1 {
         font-size: 3rem;
         margin: 0;
-        background: linear-gradient(45deg, #6A5ACD, #B3A9F8);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
         font-weight: 700;
         font-family: 'Space Grotesk', sans-serif;
+    }
+    .cat-container h1 span:first-child {
+        color: #FF2261;
+    }
+    .cat-container h1 span:last-child {
+        color: #00A4FF;
     }
     .cat-container p {
         color: #B0B0B0;
@@ -91,7 +92,7 @@ st.markdown("""
     
     div[data-testid="stFileUploader"] > section > div {
         background: #2D2D2D !important;
-        border: 3px dashed #6A5ACD !important;
+        border: 3px dashed #FF2261 !important;
         border-radius: 20px !important;
         padding: 2rem !important;
         text-align: center !important;
@@ -114,7 +115,7 @@ st.markdown("""
     
     div[data-testid="stFileUploader"] > section > div:hover {
         background: #363636 !important;
-        border-color: #B3A9F8 !important;
+        border-color: #00A4FF !important;
         color: #FFFFFF !important;
     }
     
@@ -130,7 +131,7 @@ st.markdown("""
     
     /* Download button */
     .stDownloadButton button {
-        background: linear-gradient(45deg, #6A5ACD, #B3A9F8) !important;
+        background: #FF2261 !important;
         color: white !important;
         border: none !important;
         padding: 0.75rem 2rem !important;
@@ -142,8 +143,9 @@ st.markdown("""
         margin: 1rem 0 !important;
     }
     .stDownloadButton button:hover {
+        background: #00A4FF !important;
         transform: translateY(-2px);
-        box-shadow: 0 5px 15px rgba(106, 90, 205, 0.3);
+        box-shadow: 0 5px 15px rgba(0, 164, 255, 0.3);
     }
     
     /* Cards */
@@ -166,7 +168,7 @@ st.markdown("""
     
     /* Success message */
     .stSuccess {
-        background: rgba(106, 90, 205, 0.2) !important;
+        background: rgba(255, 34, 97, 0.2) !important;
         color: #FFFFFF !important;
         border-radius: 12px !important;
         padding: 1rem !important;
@@ -175,7 +177,7 @@ st.markdown("""
     
     /* Error message */
     .stError {
-        background: rgba(255, 105, 180, 0.2) !important;
+        background: rgba(0, 164, 255, 0.2) !important;
         color: #FFFFFF !important;
     }
 </style>
@@ -263,7 +265,7 @@ def main():
     st.markdown(
         """
         <div class="cat-container">
-            <h1>MurDown</h1>
+            <h1><span>Murk</span><span>Down</span></h1>
             <p>Your purr-fessional Markdown conversion companion! 🐱</p>
         </div>
         """,
