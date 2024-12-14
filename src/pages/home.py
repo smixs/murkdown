@@ -1,5 +1,5 @@
 """
-MarkItDown Web - Main application page
+MurDowd - Your Markdown Cat Assistant
 """
 import streamlit as st
 from pathlib import Path
@@ -12,8 +12,8 @@ from src.components.file_uploader import file_uploader_component
 
 # Configure Streamlit page
 st.set_page_config(
-    page_title="MarkItDown Web",
-    page_icon="📝",
+    page_title="MurDown",
+    page_icon="🐱",
     layout="wide",
     initial_sidebar_state="expanded"
 )
@@ -21,27 +21,43 @@ st.set_page_config(
 # Custom CSS
 st.markdown("""
 <style>
-    /* Modern theme */
+    /* Dark theme */
     .stApp {
-        background-image: url("https://raw.githubusercontent.com/yourusername/markitdown/main/static/images/background.jpg");
-        background-size: cover;
-        background-position: center;
-        background-repeat: no-repeat;
-        color: #ffffff;
+        background: #1E1E1E;
+        color: #E0E0E0;
     }
     
     /* Main container */
     .main-content {
-        background: rgba(0, 0, 0, 0.7);
+        background: #2D2D2D;
         padding: 2rem;
         border-radius: 20px;
-        backdrop-filter: blur(10px);
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    }
+    
+    /* Cat mascot container */
+    .cat-container {
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+    .cat-container h1 {
+        font-size: 3rem;
+        margin: 0;
+        background: linear-gradient(45deg, #9B6BFF, #FF69B4);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        font-weight: 800;
+    }
+    .cat-container p {
+        color: #B0B0B0;
+        font-size: 1.2rem;
+        margin-top: 0.5rem;
     }
     
     /* Large dropzone */
     .uploadfile {
-        background: rgba(255, 255, 255, 0.1) !important;
-        border: 3px dashed rgba(255, 255, 255, 0.3) !important;
+        background: #363636 !important;
+        border: 3px dashed #9B6BFF !important;
         border-radius: 20px !important;
         padding: 4rem !important;
         text-align: center !important;
@@ -50,15 +66,17 @@ st.markdown("""
         display: flex !important;
         align-items: center !important;
         justify-content: center !important;
+        color: #B0B0B0 !important;
     }
     .uploadfile:hover {
-        background: rgba(255, 255, 255, 0.2) !important;
-        border-color: rgba(255, 255, 255, 0.5) !important;
+        background: #404040 !important;
+        border-color: #FF69B4 !important;
+        color: #FFFFFF !important;
     }
     
     /* Download button */
     .stDownloadButton button {
-        background: linear-gradient(45deg, #4a90e2, #357abd) !important;
+        background: linear-gradient(45deg, #9B6BFF, #FF69B4) !important;
         color: white !important;
         border: none !important;
         padding: 0.75rem 2rem !important;
@@ -71,24 +89,37 @@ st.markdown("""
     }
     .stDownloadButton button:hover {
         transform: translateY(-2px);
-        box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        box-shadow: 0 5px 15px rgba(155, 107, 255, 0.3);
     }
     
     /* Cards */
     .info-card {
-        background: rgba(255, 255, 255, 0.1);
+        background: #363636;
         border-radius: 15px;
         padding: 1.5rem;
         margin: 1rem 0;
-        backdrop-filter: blur(10px);
+        border: 1px solid #404040;
     }
     
     /* Content area */
     pre {
-        background: rgba(0, 0, 0, 0.3) !important;
+        background: #2D2D2D !important;
         padding: 1rem !important;
         border-radius: 10px !important;
-        border: 1px solid rgba(255, 255, 255, 0.1) !important;
+        border: 1px solid #404040 !important;
+        color: #E0E0E0 !important;
+    }
+    
+    /* Success message */
+    .stSuccess {
+        background: rgba(155, 107, 255, 0.2) !important;
+        color: #FFFFFF !important;
+    }
+    
+    /* Error message */
+    .stError {
+        background: rgba(255, 105, 180, 0.2) !important;
+        color: #FFFFFF !important;
     }
 </style>
 """, unsafe_allow_html=True)
@@ -105,14 +136,14 @@ def initialize_session_state():
 def show_result(result):
     """Display conversion result"""
     if result.success:
-        st.success("✨ Conversion completed successfully!")
+        st.success("😺 Purrfect! Your file has been converted!")
         
         # Center-align container for the download button
         col1, col2, col3 = st.columns([1, 2, 1])
         with col2:
             # Large centered download button
             st.download_button(
-                label="⬇️ Download Markdown",
+                label="🐾 Download Markdown",
                 data=result.content,
                 file_name=Path(result.output_file).name,
                 mime="text/markdown",
@@ -139,7 +170,7 @@ def show_result(result):
             'timestamp': st.session_state.get('timestamp', 'Unknown')
         })
     else:
-        st.error(f"❌ Conversion failed: {result.error}")
+        st.error(f"😿 Oops! Something went wrong: {result.error}")
 
 def show_conversion_history():
     """Display conversion history"""
@@ -147,7 +178,7 @@ def show_conversion_history():
         st.markdown(
             """
             <div class="info-card">
-                <h3>📚 Recent Conversions</h3>
+                <h3>🐱 MurDowd's Recent Adventures</h3>
             """,
             unsafe_allow_html=True
         )
@@ -163,13 +194,23 @@ def main():
     # Main content container
     st.markdown('<div class="main-content">', unsafe_allow_html=True)
     
-    st.title("📝 MarkItDown Web")
+    # Cat mascot header
+    st.markdown(
+        """
+        <div class="cat-container">
+            <h1>MurDowd</h1>
+            <p>Your purr-fessional Markdown conversion companion! 🐱</p>
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
+    
     st.markdown(
         """
         <div style='text-align: center; padding: 1rem 0;'>
-            <p style='font-size: 1.2rem; opacity: 0.8;'>
-                Transform your documents into clean, readable Markdown.<br>
-                Just drop your file and we'll handle the rest.
+            <p style='font-size: 1.2rem; color: #B0B0B0;'>
+                Drop your documents here and let MurDowd work his magic!<br>
+                He'll turn them into purrfect Markdown in no time. 🐾
             </p>
         </div>
         """,
@@ -184,7 +225,7 @@ def main():
     
     # Process file if uploaded
     if file_uploaded and temp_file:
-        with st.spinner("🔄 Converting your file..."):
+        with st.spinner("🔄 MurDowd is working his magic..."):
             result = st.session_state.converter.convert_file(temp_file)
             show_result(result)
     
