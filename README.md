@@ -55,8 +55,8 @@ Create a `.env` file with the following variables:
 
 ## Live Demo
 
-Visit [Streamlit Cloud]([https://streamlit.io](https://murkdown.streamlit.app/)) to see the live demo.
+Visit [Streamlit Cloud](https://murkdown.streamlit.app/) to see the live demo.
 
 ## License
 
-MIT 
+MIT
