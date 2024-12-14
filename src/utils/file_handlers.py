@@ -5,6 +5,7 @@ from pathlib import Path
 from typing import Union, BinaryIO, Optional
 import tempfile
 import os
+import shutil
 
 def save_uploaded_file(uploaded_file: BinaryIO, temp_dir: Union[str, Path]) -> Optional[Path]:
     """
@@ -38,9 +39,32 @@ def cleanup_temp_files(temp_dir: Union[str, Path]) -> None:
     """
     temp_dir = Path(temp_dir)
     if temp_dir.exists():
-        for file in temp_dir.glob("*"):
-            if file.is_file():
-                try:
-                    file.unlink()
-                except Exception as e:
-                    print(f"Error deleting {file}: {e}") 
+        shutil.rmtree(temp_dir)
+        temp_dir.mkdir(parents=True, exist_ok=True)
+
+def get_file_size(file_path: Union[str, Path]) -> str:
+    """
+    Get human-readable file size
+    
+    Args:
+        file_path: Path to the file
+        
+    Returns:
+        Human-readable size string
+    """
+    size_bytes = Path(file_path).stat().st_size
+    for unit in ['B', 'KB', 'MB', 'GB']:
+        if size_bytes < 1024:
+            return f"{size_bytes:.1f} {unit}"
+        size_bytes /= 1024
+    return f"{size_bytes:.1f} TB"
+
+def ensure_directories(*dirs: Union[str, Path]) -> None:
+    """
+    Ensure directories exist
+    
+    Args:
+        *dirs: Directories to create
+    """
+    for dir_path in dirs:
+        Path(dir_path).mkdir(parents=True, exist_ok=True)

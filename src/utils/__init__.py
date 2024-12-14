@@ -2,14 +2,13 @@
 Utility functions for MarkItDown Web
 """
 
-from .converters import convert_to_markdown, extract_metadata, detect_file_type, ConversionError
+from .converters import MarkdownConverter, ConversionResult, SUPPORTED_FORMATS
 from .file_handlers import save_uploaded_file, cleanup_temp_files
 
 __all__ = [
-    'convert_to_markdown',
-    'extract_metadata',
-    'detect_file_type',
-    'ConversionError',
+    'MarkdownConverter',
+    'ConversionResult',
+    'SUPPORTED_FORMATS',
     'save_uploaded_file',
     'cleanup_temp_files',
 ] 
