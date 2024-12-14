@@ -4,9 +4,7 @@ MarkItDown Web - Main application page
 import streamlit as st
 from pathlib import Path
 import tempfile
-import json
-import requests
-from streamlit_lottie import st_lottie
+import base64
 
 from src.utils.converters import MarkdownConverter
 from src.utils.file_handlers import cleanup_temp_files, ensure_directories
@@ -20,76 +18,77 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-def load_lottie_url(url: str):
-    """Load Lottie animation from URL"""
-    r = requests.get(url)
-    if r.status_code != 200:
-        return None
-    return r.json()
-
-# Load animations
-lottie_upload = load_lottie_url("https://assets5.lottiefiles.com/packages/lf20_u25cckyh.json")
-lottie_convert = load_lottie_url("https://assets5.lottiefiles.com/packages/lf20_EyJRpT.json")
-lottie_success = load_lottie_url("https://assets5.lottiefiles.com/packages/lf20_jmejybvu.json")
-
 # Custom CSS
 st.markdown("""
 <style>
-    /* Modern interactive theme */
+    /* Modern theme */
     .stApp {
-        background: #1a1a1a;
+        background-image: url("https://raw.githubusercontent.com/yourusername/markitdown/main/static/images/background.jpg");
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
         color: #ffffff;
     }
     
-    /* Glowing effects */
-    @keyframes glow {
-        0% { box-shadow: 0 0 5px #4a90e2; }
-        50% { box-shadow: 0 0 20px #4a90e2; }
-        100% { box-shadow: 0 0 5px #4a90e2; }
+    /* Main container */
+    .main-content {
+        background: rgba(0, 0, 0, 0.7);
+        padding: 2rem;
+        border-radius: 20px;
+        backdrop-filter: blur(10px);
     }
     
-    /* Interactive elements */
-    .stButton button {
-        background: linear-gradient(45deg, #4a90e2, #357abd);
-        border: none !important;
-        color: white !important;
-        padding: 0.5rem 2rem !important;
-        border-radius: 25px !important;
-        font-size: 1.1rem !important;
-        transition: all 0.3s ease !important;
-        animation: glow 2s infinite;
-    }
-    .stButton button:hover {
-        transform: translateY(-2px);
-        filter: brightness(1.2);
-    }
-    
-    /* Upload zone */
+    /* Large dropzone */
     .uploadfile {
-        background: rgba(74, 144, 226, 0.1) !important;
-        border: 2px solid #4a90e2 !important;
-        border-radius: 15px !important;
-        padding: 2rem !important;
+        background: rgba(255, 255, 255, 0.1) !important;
+        border: 3px dashed rgba(255, 255, 255, 0.3) !important;
+        border-radius: 20px !important;
+        padding: 4rem !important;
+        text-align: center !important;
         transition: all 0.3s ease !important;
+        min-height: 300px !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
     }
     .uploadfile:hover {
-        background: rgba(74, 144, 226, 0.2) !important;
-        animation: glow 2s infinite;
+        background: rgba(255, 255, 255, 0.2) !important;
+        border-color: rgba(255, 255, 255, 0.5) !important;
+    }
+    
+    /* Download button */
+    .stDownloadButton button {
+        background: linear-gradient(45deg, #4a90e2, #357abd) !important;
+        color: white !important;
+        border: none !important;
+        padding: 0.75rem 2rem !important;
+        border-radius: 30px !important;
+        font-size: 1.2rem !important;
+        font-weight: 600 !important;
+        transition: all 0.3s ease !important;
+        width: 100% !important;
+        margin: 1rem 0 !important;
+    }
+    .stDownloadButton button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.2);
     }
     
     /* Cards */
     .info-card {
-        background: rgba(255, 255, 255, 0.05);
+        background: rgba(255, 255, 255, 0.1);
         border-radius: 15px;
         padding: 1.5rem;
         margin: 1rem 0;
         backdrop-filter: blur(10px);
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        transition: all 0.3s ease;
     }
-    .info-card:hover {
-        transform: translateY(-5px);
-        background: rgba(255, 255, 255, 0.1);
+    
+    /* Content area */
+    pre {
+        background: rgba(0, 0, 0, 0.3) !important;
+        padding: 1rem !important;
+        border-radius: 10px !important;
+        border: 1px solid rgba(255, 255, 255, 0.1) !important;
     }
 </style>
 """, unsafe_allow_html=True)
@@ -102,18 +101,10 @@ def initialize_session_state():
         st.session_state.temp_dir = Path(tempfile.mkdtemp())
     if 'conversion_history' not in st.session_state:
         st.session_state.conversion_history = []
-    if 'show_success' not in st.session_state:
-        st.session_state.show_success = False
 
 def show_result(result):
     """Display conversion result"""
     if result.success:
-        # Show success animation
-        st.session_state.show_success = True
-        col1, col2, col3 = st.columns([1, 1, 1])
-        with col2:
-            st_lottie(lottie_success, height=200, key="success")
-        
         st.success("✨ Conversion completed successfully!")
         
         # Center-align container for the download button
@@ -133,9 +124,7 @@ def show_result(result):
             f"""
             <div class="info-card">
                 <h3>📄 Converted Content</h3>
-                <pre style="background: rgba(0,0,0,0.2); padding: 1rem; border-radius: 10px;">
-                {result.content}
-                </pre>
+                <pre>{result.content}</pre>
             </div>
             """,
             unsafe_allow_html=True
@@ -171,48 +160,39 @@ def main():
     # Initialize session state
     initialize_session_state()
     
-    # Main content
+    # Main content container
+    st.markdown('<div class="main-content">', unsafe_allow_html=True)
+    
     st.title("📝 MarkItDown Web")
-    
-    # Show upload animation if no file is being processed
-    if not st.session_state.show_success:
-        col1, col2, col3 = st.columns([1, 1, 1])
-        with col2:
-            st_lottie(lottie_upload, height=200, key="upload")
-    
     st.markdown(
         """
         <div style='text-align: center; padding: 1rem 0;'>
-            <p style='font-size: 1.2rem; color: #4a90e2;'>
+            <p style='font-size: 1.2rem; opacity: 0.8;'>
                 Transform your documents into clean, readable Markdown.<br>
-                Just drop your file and watch the magic happen! ✨
+                Just drop your file and we'll handle the rest.
             </p>
         </div>
         """,
         unsafe_allow_html=True
     )
     
-    # Create centered container
-    col1, col2, col3 = st.columns([1, 2, 1])
+    # Create centered container for file uploader
+    col1, col2, col3 = st.columns([1, 3, 1])
     with col2:
         # File uploader
         file_uploaded, temp_file = file_uploader_component(st.session_state.temp_dir)
     
     # Process file if uploaded
     if file_uploaded and temp_file:
-        # Show converting animation
-        col1, col2, col3 = st.columns([1, 1, 1])
-        with col2:
-            st_lottie(lottie_convert, height=200, key="converting")
-        
         with st.spinner("🔄 Converting your file..."):
             result = st.session_state.converter.convert_file(temp_file)
             show_result(result)
-    else:
-        st.session_state.show_success = False
     
     # Show conversion history
     show_conversion_history()
+    
+    # Close main content container
+    st.markdown('</div>', unsafe_allow_html=True)
     
     # Cleanup temporary files when session ends
     cleanup_temp_files(st.session_state.temp_dir)

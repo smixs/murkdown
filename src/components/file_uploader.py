@@ -19,7 +19,7 @@ def file_uploader_component(temp_dir: Path) -> Tuple[bool, Optional[Path]]:
     """
     # File uploader with custom styling
     uploaded_file = st.file_uploader(
-        "📎 Drop your file here or click to browse",
+        "Drop your file here",
         type=list(SUPPORTED_FORMATS.keys()),
         help="Select a file to convert to Markdown format",
         key="file_uploader",
@@ -31,7 +31,7 @@ def file_uploader_component(temp_dir: Path) -> Tuple[bool, Optional[Path]]:
         st.markdown(
             f"""
             <div class="info-card">
-                <h4 style='margin: 0; color: #4a90e2;'>📄 File Details</h4>
+                <h4 style='margin: 0; color: #ffffff;'>Selected File</h4>
                 <div style='margin: 0.5rem 0;'>
                     <p style='margin: 0.2rem 0;'>
                         <strong>Name:</strong> {uploaded_file.name}
@@ -39,13 +39,6 @@ def file_uploader_component(temp_dir: Path) -> Tuple[bool, Optional[Path]]:
                     <p style='margin: 0.2rem 0;'>
                         <strong>Size:</strong> {len(uploaded_file.getvalue()) / 1024:.1f} KB
                     </p>
-                    <div style='
-                        height: 4px;
-                        background: linear-gradient(90deg, #4a90e2 0%, #357abd 100%);
-                        border-radius: 2px;
-                        margin: 0.5rem 0;
-                        animation: glow 2s infinite;
-                    '></div>
                 </div>
             </div>
             """,
