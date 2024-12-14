@@ -1,0 +1,40 @@
+# Main Library
+markitdown>=0.0.1a2
+
+# Web Framework
+streamlit>=1.28.0
+
+# Document Processing
+python-docx>=0.8.11  # For Word documents
+PyPDF2>=3.0.0  # For PDF files
+openpyxl>=3.1.2  # For Excel files
+python-pptx>=0.6.21  # For PowerPoint files
+
+# Image Processing
+Pillow>=10.0.0  # Base image processing
+pytesseract>=0.3.10  # OCR engine
+exifread>=3.0.0  # EXIF metadata
+
+# Audio Processing
+SpeechRecognition>=3.10.0  # Speech to text
+pydub>=0.25.1  # Audio file handling
+
+# HTML Processing
+beautifulsoup4>=4.12.0  # HTML parsing
+wikipedia-api>=0.6.0  # Wikipedia processing
+html2text>=2020.1.16  # HTML to markdown
+
+# Data Processing
+pandas>=2.0.0  # Data manipulation
+numpy>=1.24.0  # Numerical operations
+python-magic>=0.4.27  # File type detection
+
+# Development Tools
+pytest>=7.4.0  # Testing
+black>=23.9.1  # Code formatting
+flake8>=6.1.0  # Code linting
+python-dotenv>=1.0.0  # Environment variables
+
+# Type Hints
+typing-extensions>=4.7.0  # Enhanced type hints
+  
