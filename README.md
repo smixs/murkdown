@@ -2,6 +2,8 @@
 
 Purrfect for LLMs - converts any document into LLM-optimized Markdown format.
 
+![MurkDown](static/images/cat.png)
+
 ## Features
 
 - Convert various document formats to Markdown  
